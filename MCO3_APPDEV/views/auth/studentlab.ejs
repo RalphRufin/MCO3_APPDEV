@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab Selection</title>
+</head>
+<body>
+    <h1>Select Lab, Date, Seat, and Time Slot</h1>
+    <form id="labForm">
+        <label for="labSelect">Select Lab:</label>
+        <select id="labSelect" name="lab">
+            <% labs.forEach(lab => { %>
+                <option value="<%= lab._id %>"><%= lab.LabName %></option>
+            <% }); %>
+        </select>
+
+        <label for="dateSelect">Select Date:</label>
+        <select id="dateSelect" name="date" disabled>
+            <option value="" disabled selected>Select Date</option>
+        </select>
+
+        <label for="seatSelect">Select Seat:</label>
+        <select id="seatSelect" name="seat" disabled>
+            <option value="" disabled selected>Select Seat</option>
+        </select>
+
+        <label for="timeSlotSelect">Select Time Slot:</label>
+        <select id="timeSlotSelect" name="timeSlot" disabled>
+            <option value="" disabled selected>Select Time Slot</option>
+        </select>
+
+        <button type="submit">Reserve</button>
+    </form>
+
+    <script>
+        document.getElementById('labSelect').addEventListener('change', async (event) => {
+            const labId = event.target.value;
+            const dateSelect = document.getElementById('dateSelect');
+            dateSelect.innerHTML = '<option value="" disabled selected>Loading Dates...</option>';
+
+            try {
+                const response = await fetch(`/labs/${labId}/dates`);
+                const dates = await response.json();
+
+                dateSelect.innerHTML = '<option value="" disabled selected>Select Date</option>';
+                dates.forEach(date => {
+                    const option = document.createElement('option');
+                    option.value = date;
+                    option.text = date;
+                    dateSelect.add(option);
+                });
+
+                dateSelect.disabled = false;
+            } catch (error) {
+                console.error('Error fetching dates:', error);
+                dateSelect.innerHTML = '<option value="" disabled selected>Error fetching dates</option>';
+            }
+        });
+
+        document.getElementById('dateSelect').addEventListener('change', async (event) => {
+        const labId = document.getElementById('labSelect').value;
+        const date = event.target.value;
+        console.log('Selected Date:', date);
+        const seatSelect = document.getElementById('seatSelect');
+        seatSelect.innerHTML = '<option value="" disabled selected>Loading Seats...</option>';
+
+        try {
+            const response = await fetch(`/labs/${labId}/seats?date=${date}`);
+            const seats = await response.json();
+
+            seatSelect.innerHTML = '<option value="" disabled selected>Select Seat</option>';
+            seats.forEach(seat => {
+                const option = document.createElement('option');
+                option.value = seat;
+                option.text = seat;
+                seatSelect.add(option);
+            });
+
+            seatSelect.disabled = false;
+        } catch (error) {
+            console.error('Error fetching seats:', error);
+            seatSelect.innerHTML = '<option value="" disabled selected>Error fetching seats</option>';
+        }
+    });
+
+    document.getElementById('seatSelect').addEventListener('change', async (event) => {
+    const labId = document.getElementById('labSelect').value;
+    const date = document.getElementById('dateSelect').value;
+    const seat = event.target.value;
+
+    try {
+        const response = await fetch(`/labs/${labId}/timeslots?date=${date}&seat=${seat}`);
+        const timeSlots = await response.json();
+
+        const timeSlotSelect = document.getElementById('timeSlotSelect');
+        timeSlotSelect.innerHTML = '';
+
+        timeSlots.forEach(timeSlot => {
+            const option = document.createElement('option');
+            option.value = timeSlot;
+            option.text = timeSlot;
+            timeSlotSelect.add(option);
+        });
+
+        timeSlotSelect.disabled = false;
+    } catch (error) {
+        console.error(error);
+    }
+});
+    </script>
+</body>
+</html>

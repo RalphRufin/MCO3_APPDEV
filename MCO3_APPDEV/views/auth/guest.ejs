@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guest Labs</title>
+</head>
+
+<body>
+    <h1>Guest Labs</h1>
+    <% labs.forEach(lab => { %>
+        <h2><%= lab.LabName %></h2>
+        <ul>
+            <% lab.SeatReservations.forEach(seatReservation => { %>
+                <li>Date: <%= seatReservation.Date %></li>
+                <ul>
+                    <% seatReservation.Seats.forEach(seat => { %>
+                        <li>Seat ID: <%= seat.SeatID %></li>
+                        <li>Identifier: <%= seat.Identifier %></li>
+                        <li>Slot Reservations:</li>
+                        <ul>
+                            <% seat.SlotReservations.forEach(slotReservation => { %>
+                                <li>Time Slot: <%= slotReservation.timeSlot %></li>
+                                <li>Identifier: <%= slotReservation.identifier %></li>
+                                <li>Reservee: <%= slotReservation.reservee %></li>
+                                <li>State: <%= slotReservation.state %></li>
+                            <% }); %>
+                        </ul>
+                    <% }); %>
+                </ul>
+            <% }); %>
+        </ul>
+    <% }); %>
+</body>
+
+</html>
