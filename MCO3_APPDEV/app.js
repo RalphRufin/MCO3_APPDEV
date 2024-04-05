@@ -11,12 +11,15 @@ const app = express();
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
+app.use(express.static('public'));
 
 const authRoutes = require('./routes/auth');
 const labRoutes = require('./routes/labs');
 const searchRoute = require('./routes/search');
 
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(session());
+app.use(flash());
 app.use(authRoutes);
 app.use(labRoutes);
 app.use(flash());

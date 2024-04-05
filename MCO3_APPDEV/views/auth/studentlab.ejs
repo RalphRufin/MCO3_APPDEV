@@ -3,35 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab Selection</title>
+    <link rel="stylesheet" href="../css/studentlab.css">
 </head>
 <body>
-    <h1>Select Lab, Date, Seat, and Time Slot</h1>
-    <form class="labForm" data-user-id="<%= user.userID %>">
-        <label for="labSelect">Select Lab:</label>
-        <select id="labSelect" name="lab">
-            <% labs.forEach(lab => { %>
-                <option value="<%= lab._id %>"><%= lab.LabName %></option>
-            <% }); %>
-        </select>
+    <div class="menu"> 
+        <div class="menu-header"> 
+            <a href = "/guest">
+                <img class = logo src = "MCO3_APPDEV/public/media/LabrYnth.png">
+            </a>
+        </div>  
+    </div>
+    <div class="content-container">
+        <h1>RESERVE SEAT SLOTS</h1>
+            <form class="labForm">
+                <label for="labSelect">Select Lab:</label>
+                <select id="labSelect" name="lab">
+                    <% labs.forEach(lab => { %>
+                        <option value="<%= lab._id %>"><%= lab.LabName %></option>
+                    <% }); %>
+                </select>
 
-        <label for="dateSelect">Select Date:</label>
-        <select id="dateSelect" name="date" disabled>
-            <option value="" disabled selected>Select Date</option>
-        </select>
+                <label for="dateSelect">Select Date:</label>
+                <select id="dateSelect" name="date" disabled>
+                    <option value="" disabled selected>Select Date</option>
+                </select>
 
-        <label for="seatSelect">Select Seat:</label>
-        <select id="seatSelect" name="seat" disabled>
-            <option value="" disabled selected>Select Seat</option>
-        </select>
+                <label for="seatSelect">Select Seat:</label>
+                <select id="seatSelect" name="seat" disabled>
+                    <option value="" disabled selected>Select Seat</option>
+                </select>
 
-        <label for="timeSlotSelect">Select Time Slot:</label>
-        <select id="timeSlotSelect" name="timeSlot" disabled>
-            <option value="" disabled selected>Select Time Slot</option>
-        </select>
-
-        <button type="submit" id="reserveButton" disabled>Reserve</button>
-    </form>
-
+                <label for="timeSlotSelect">Select Time Slot:</label>
+                <select id="timeSlotSelect" name="timeSlot" disabled>
+                    <option value="" disabled selected>Select Time Slot</option>
+                </select>
+                <div class="anonymous-option">
+                    <label for="anonymousCheckbox">Reserve Anonymously</label>
+                    <input type="checkbox" id="anonymousCheckbox">
+                  </div>
+                <button type="submit" id="reserveButton" disabled>Reserve</button>
+            </form>
+    </div>
     <script>
         document.getElementById('labSelect').addEventListener('change', async (event) => {
             const labId = event.target.value;
