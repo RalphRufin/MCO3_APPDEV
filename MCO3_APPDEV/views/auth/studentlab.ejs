@@ -7,7 +7,7 @@
 </head>
 <body>
     <h1>Select Lab, Date, Seat, and Time Slot</h1>
-    <form id="labForm">
+    <form class="labForm">
         <label for="labSelect">Select Lab:</label>
         <select id="labSelect" name="lab">
             <% labs.forEach(lab => { %>
@@ -30,7 +30,7 @@
             <option value="" disabled selected>Select Time Slot</option>
         </select>
 
-        <button type="submit">Reserve</button>
+        <button type="submit" id="reserveButton" disabled>Reserve</button>
     </form>
 
     <script>
@@ -104,10 +104,45 @@
         });
 
         timeSlotSelect.disabled = false;
+        document.getElementById('reserveButton').disabled = false;
     } catch (error) {
         console.error(error);
     }
+    });
+
+    document.querySelector('.labForm').addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const labId = document.querySelector('[name="lab"]').value;
+    const date = document.getElementById('dateSelect').value;
+    const seat = document.getElementById('seatSelect').value;
+    const timeSlot = document.getElementById('timeSlotSelect').value;
+
+    console.log('Submitting reservation for:');
+    console.log('Lab ID:', labId);
+    console.log('Date:', date);
+    console.log('Seat:', seat);
+    console.log('Time Slot:', timeSlot);
+
+    try {
+        const response = await fetch(`/reserve-slot/${labId}?date=${date}&seat=${seat}&timeSlot=${timeSlot}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            console.log('Reservation successful:', data.message);
+        } else {
+            console.error('Reservation failed:', response.statusText);
+        }
+    } catch (error) {
+        console.error('Error reserving slot:', error);
+    }
 });
+
     </script>
 </body>
 </html>
