@@ -16,15 +16,36 @@ app.use(express.static('public'));
 const authRoutes = require('./routes/auth');
 const labRoutes = require('./routes/labs');
 const searchRoute = require('./routes/search');
+const userRoutes = require('./routes/user'); 
+app.use(userRoutes);
+
 
 app.use(bodyParser.urlencoded({ extended: false }));
-//app.use(session());
+app.use(session({
+  secret: 'your secret key', 
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: true } 
+ }));
 app.use(flash());
 app.use(authRoutes);
 app.use(labRoutes);
-app.use(flash());
-app.use(authRoutes);
 app.use(searchRoute);
+
+app.use((req, res, next) => {
+  if (!req.session.user) {
+    return next();
+  }
+  User.findById(req.session.user._id)
+    .then(user => {
+      req.user = user;
+      next();
+    })
+    .catch(err => console.log(err));
+});
+
+
+
 
 async function seedDatabase() {
     try {
