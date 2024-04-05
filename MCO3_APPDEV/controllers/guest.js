@@ -180,9 +180,9 @@ exports.getTimeslots = async (req, res) => {
             return res.status(404).json({ message: 'Seat not found' });
         }
 
-        const timeSlots = selectedSeat.SlotReservations.map(slot => slot.timeSlot);
+        const slotReservations = selectedSeat.SlotReservations;
 
-        res.status(200).json(timeSlots);
+        res.status(200).json(slotReservations);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal Server Error' });
@@ -268,4 +268,3 @@ exports.getStudentReservationPage = async (req, res, next) => {
         res.status(500).send('Internal Server Error');
     }
 };
-
