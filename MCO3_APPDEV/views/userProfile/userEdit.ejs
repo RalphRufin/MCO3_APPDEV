@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit <%= user.name %>'s Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .profile-edit-container {
+            background-color: #fff;
+            margin: 20px auto;
+            padding: 20px;
+            width: 80%;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .profile-edit-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .profile-edit-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .profile-edit-form input[type="text"],
+        .profile-edit-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .profile-edit-form button {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        .profile-edit-form button:hover {
+            background-color: #0056b3;
+        }
+        .profile-edit-form a {
+            text-decoration: none;
+            color: #007BFF;
+            padding: 10px 20px;
+            border-radius: 4px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        .profile-edit-form a:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<<body>
+    <div class="profile-edit-container">
+        <div class="profile-edit-header">
+            <h1>Edit <%= user.id %>'s Profile</h1>
+        </div>
+        <form action="/user/edit/<%= user._id %>" method="POST" enctype="multipart/form-data">
+            <label for="description">Description:</label>
+            <textarea name="description" rows="4" placeholder="Enter a description"><%= user.txtFilename %></textarea>
+            
+            <label for="image">Profile Image:</label>
+            <input type="file" id="image" name="image">
+            
+            <button type="submit">Save Changes</button>
+        </form>
+        <a href="/user/delete/<%= user._id %>">Delete Profile</a>
+    </div>
+</body>
+</html>
