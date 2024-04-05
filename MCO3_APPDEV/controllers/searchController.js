@@ -8,7 +8,7 @@ exports.getSearch = (req, res, next) => {
      path: '/search',
      pageTitle: 'Search',
      messages: {},
-     searchResults: [] // Ensure searchResults is always defined
+     searchResults: [] 
   });
  };
  
@@ -28,3 +28,5 @@ exports.postSearch = (req, res, next) => {
     })
     .catch(err => next(err));
 };
+
+
