@@ -44,6 +44,21 @@
         .profile-info a:hover {
             background-color: #0056b3;
         }
+
+        /* Container to maintain aspect ratio of profile image */
+        .profile-image-container {
+            width: 200px; /* Adjust the width as needed */
+            height: auto; /* Automatically adjust height to maintain aspect ratio */
+            margin-bottom: 20px;
+        }
+
+        /* Profile image with max width and height to fit within container */
+        .profile-image {
+            max-width: 100%;
+            max-height: 100%;
+            display: block;
+            margin: 0 auto; /* Center the image horizontally */
+        }
     </style>
 </head>
 <body>
@@ -52,12 +67,15 @@
             <h1><%= user.name %>'s Profile</h1>
         </div>
         <div class="profile-info">
+            <!-- Profile image with scaled uniformity -->
+            <div class="profile-image-container">
+                <img src="/<%= user.jpgFilename %>" alt="Profile Image" class="profile-image">
+            </div>
             
-            <img src="<%= user.profileImage %>" alt="Profile Image" class="profile-image">
-            
+            <!-- Other profile information -->
             <p>Email: <%= user.email %></p>
             <p>Role: <%= user.role %></p>
-            <p>Description: <%= user.description %></p>
+            <p>Description: <%= user.txtFilename %></p>
             
             <a href="/search">Back to Home</a>
         </div>
