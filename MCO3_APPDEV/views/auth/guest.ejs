@@ -7,12 +7,31 @@
     <link rel="stylesheet" href="../css/guest.css">
 </head>
 <body>
+
     <div class="menu"> 
-        <div class="menu-header"> 
-            <a href = "/guest">
-                <img class = logo src = "MCO3_APPDEV/public/media/LabrYnth.png">
-            </a>
-        </div>  
+        <div class="menu-header">
+            <img class="logo" src="../imgs/LabrYnth.png" />
+            <div class="right-wrapper">
+                <div
+                    class="button-wrapper"
+                    onclick="window.location.href='/login'"
+                    data-tooltip="Login to Google"
+                >
+                    <div class="login">
+                        <span class="bold">Login</span>
+                    </div>
+                </div>
+                <div
+                    class="button-wrapper"
+                    onclick="window.location.href='/signup'"
+                    data-tooltip="Register Account"
+                    >
+                    <div class="register">
+                        <span class="bold">Register</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="content-container">
         <h1>Guest Page</h1>
@@ -120,3 +139,4 @@
     </script>
 </body>
 </html>
+
