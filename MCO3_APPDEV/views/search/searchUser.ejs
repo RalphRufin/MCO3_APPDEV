@@ -20,17 +20,13 @@
             <% searchResults.forEach(user => { %>
               <li>
                 Email: <%= user.email %>,
-                Name: <%= user.name %>
+                Name: <%= user.name %>,
                 <a href="/user/<%= user._id %>">View Profile</a>
               </li>
             <% }); %>
           </ul>
         <% } else { %>
-          <% if (searchTerm) { %>
-            <p>No users found matching your criteria "<%= searchTerm %>".</p>
-          <% } else { %>
-            <p>Displaying all users. Please enter a search term to filter the results.</p>
-          <% } %>
+          <p>No search results found.</p>
         <% } %>
     </div>
 </body>
