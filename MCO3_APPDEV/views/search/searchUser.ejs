@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Technician Reservation</title>
+    <title>Search User</title>
 </head>
 <body>
     <h1>User Search</h1>
@@ -21,12 +21,17 @@
               <li>
                 Email: <%= user.email %>,
                 Name: <%= user.name %>
+                <a href="/user/<%= user._id %>">View Profile</a>
               </li>
             <% }); %>
           </ul>
         <% } else { %>
-          <p>No users found matching your criteria.</p>
+          <% if (searchTerm) { %>
+            <p>No users found matching your criteria "<%= searchTerm %>".</p>
+          <% } else { %>
+            <p>Displaying all users. Please enter a search term to filter the results.</p>
+          <% } %>
         <% } %>
-      </div>
-    </body>
+    </div>
+</body>
 </html>
