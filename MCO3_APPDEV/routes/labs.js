@@ -10,7 +10,7 @@ router.get('/studentLabs', guest.getLabS);
 
 router.get('/slot-reservation/:identifier', guest.getSlotReservationByIdentifier);
 
-router.post('/reserve-slot', guest.reserveSlot);
+router.post('/reserve-slot/:labId', guest.reserveSlot);
 
 router.get('/labs/:labId/dates', guest.getDates);
 
