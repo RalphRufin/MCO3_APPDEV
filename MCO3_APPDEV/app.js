@@ -1,42 +1,53 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const flash = require('connect-flash');
-const session =  require('express-session');
-
+const session = require('express-session');
+const multer = require('multer');
 const User = require('./models/user');
 const Lab = require('./models/lab');
+const path = require('path');
 
 const app = express();
 
+const fileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'images');
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname + '-' + file.originalname);
+  }
+});
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 app.use(express.static('public'));
+
 
 const authRoutes = require('./routes/auth');
 const labRoutes = require('./routes/labs');
 const searchRoute = require('./routes/search');
 const userRoutes = require('./routes/user'); 
-app.use(userRoutes);
+app.use(multer({storage:fileStorage}).single('image'));
+app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use(express.urlencoded({ extended: true }));
 
 
-app.use(bodyParser.urlencoded({ extended: false }));
+
+
 app.use(session({
-  secret: 'your secret key', 
-  resave: false,
-  saveUninitialized: false,
-  cookie: { secure: true } 
- }));
+ secret: 'your secret key', 
+ resave: false,
+ saveUninitialized: false,
+ cookie: { secure: true } 
+}));
 app.use(flash());
-app.use(authRoutes);
-app.use(labRoutes);
-app.use(searchRoute);
+
+
 
 app.use((req, res, next) => {
-  if (!req.session.user) {
+ if (!req.session.user) {
     return next();
-  }
-  User.findById(req.session.user._id)
+ }
+ User.findById(req.session.user._id)
     .then(user => {
       req.user = user;
       next();
@@ -44,6 +55,10 @@ app.use((req, res, next) => {
     .catch(err => console.log(err));
 });
 
+app.use(authRoutes);
+app.use(labRoutes);
+app.use(searchRoute);
+app.use(userRoutes);
 
 
 
