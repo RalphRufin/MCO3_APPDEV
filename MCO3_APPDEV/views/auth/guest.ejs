@@ -1,41 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guest Labs</title>
+    <title>Guest Page</title>
     <link rel="stylesheet" href="../css/guest.css">
 </head>
-
 <body>
-    <h1>Guest Labs</h1>
-    <% labs.forEach(lab => { %>
-        <h2><%= lab.LabName %></h2>
-        <ul>
-            <% lab.SeatReservations.forEach(seatReservation => { %>
-                <li>Date: <%= seatReservation.Date %></li>
-                <ul>
-                    <% seatReservation.Seats.forEach(seat => { %>
-                        <li>Seat ID: <%= seat.SeatID %></li>
-                        <li>Identifier: <%= seat.Identifier %></li>
-                        <li>Slot Reservations:</li>
-                        <ul>
-                            <% seat.SlotReservations.forEach(slotReservation => { %>
-                                <li>Time Slot: <%= slotReservation.timeSlot %></li>
-                                <li>Identifier: <%= slotReservation.identifier %></li>
-                                <li>Reservee: <%= slotReservation.reservee %></li>
-                                <li>State: <%= slotReservation.state %></li>
-                            <% }); %>
-                        </ul>
+    <div class="menu"> 
+        <div class="menu-header"> 
+            <a href = "/guest">
+                <img class = logo src = "MCO3_APPDEV/public/media/LabrYnth.png">
+            </a>
+        </div>  
+    </div>
+    <div class="content-container">
+        <h1>Guest Page</h1>
+            <form class="labForm">
+                <label for="labSelect">Select Lab:</label>
+                <select id="labSelect" name="lab">
+                    <% labs.forEach(lab => { %>
+                        <option value="<%= lab._id %>"><%= lab.LabName %></option>
                     <% }); %>
-                </ul>
-            <% }); %>
-        </ul>
-    <% }); %>
+                </select>
 
-    <button onclick="window.location.href='/login'">Login</button>
-    <button onclick="window.location.href='/signup'">Register</button>
+                <label for="dateSelect">Select Date:</label>
+                <select id="dateSelect" name="date" disabled>
+                    <option value="" disabled selected>Select Date</option>
+                </select>
+
+                <label for="seatSelect">Select Seat:</label>
+                <select id="seatSelect" name="seat" disabled>
+                    <option value="" disabled selected>Select Seat</option>
+                </select>
+
+                <label for="timeSlotSelect">Select Time Slot:</label>
+                <select id="timeSlotSelect" name="timeSlot" disabled>
+                    <option value="" disabled selected>Select Time Slot</option>
+                </select>
+            </form>
+    </div>
+    </div>
+    <script>
+        document.getElementById('labSelect').addEventListener('change', async (event) => {
+            const labId = event.target.value;
+            const dateSelect = document.getElementById('dateSelect');
+            dateSelect.innerHTML = '<option value="" disabled selected>Loading Dates...</option>';
+
+            try {
+                const response = await fetch(`/labs/${labId}/dates`);
+                const dates = await response.json();
+
+                dateSelect.innerHTML = '<option value="" disabled selected>Select Date</option>';
+                dates.forEach(date => {
+                    const option = document.createElement('option');
+                    option.value = date;
+                    option.text = date;
+                    dateSelect.add(option);
+                });
+
+                dateSelect.disabled = false;
+            } catch (error) {
+                console.error('Error fetching dates:', error);
+                dateSelect.innerHTML = '<option value="" disabled selected>Error fetching dates</option>';
+            }
+        });
+
+        document.getElementById('dateSelect').addEventListener('change', async (event) => {
+        const labId = document.getElementById('labSelect').value;
+        const date = event.target.value;
+        console.log('Selected Date:', date);
+        const seatSelect = document.getElementById('seatSelect');
+        seatSelect.innerHTML = '<option value="" disabled selected>Loading Seats...</option>';
+
+        try {
+            const response = await fetch(`/labs/${labId}/seats?date=${date}`);
+            const seats = await response.json();
+
+            seatSelect.innerHTML = '<option value="" disabled selected>Select Seat</option>';
+            seats.forEach(seat => {
+                const option = document.createElement('option');
+                option.value = seat;
+                option.text = seat;
+                seatSelect.add(option);
+            });
+
+            seatSelect.disabled = false;
+        } catch (error) {
+            console.error('Error fetching seats:', error);
+            seatSelect.innerHTML = '<option value="" disabled selected>Error fetching seats</option>';
+        }
+    });
+
+    document.getElementById('seatSelect').addEventListener('change', async (event) => {
+    const labId = document.getElementById('labSelect').value;
+    const date = document.getElementById('dateSelect').value;
+    const seat = event.target.value;
+
+    try {
+        const response = await fetch(`/labs/${labId}/timeslots?date=${date}&seat=${seat}`);
+        const slotReservations = await response.json();
+
+        const timeSlotSelect = document.getElementById('timeSlotSelect');
+        timeSlotSelect.innerHTML = '';
+
+        slotReservations.forEach(slotReservation => {
+            const option = document.createElement('option');
+            option.value = slotReservation.timeSlot;
+            option.text = `${slotReservation.timeSlot} ${slotReservation.state ? 'Available' : 'Reserved'}`;
+            timeSlotSelect.add(option);
+        });
+
+        timeSlotSelect.disabled = false;
+        document.getElementById('reserveButton').disabled = false;
+    } catch (error) {
+        console.error(error);
+    }
+});
+    </script>
 </body>
-
 </html>
