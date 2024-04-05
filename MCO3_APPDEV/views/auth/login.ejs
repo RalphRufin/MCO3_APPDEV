@@ -1,9 +1,21 @@
 <%- include('../includes/head.ejs') %>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="../css/login.css">
 </head>
 
 <body>
+    <div class="menu"> 
+        <div class="menu-header">
+            <img class="logo" src="../imgs/LabrYnth.png" />
+        </div>
+    </div>
     <main>
         <form class="login-form" action="/login" method="POST">
+            <h1>LOGIN</h1>
             <div class="form-control">
                 <label for="email">E-Mail</label>
                 <input type="email" name="email" id="email">
