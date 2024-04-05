@@ -14,12 +14,14 @@ app.set('views', 'views');
 
 const authRoutes = require('./routes/auth');
 const labRoutes = require('./routes/labs');
+const searchRoute = require('./routes/search');
 
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(session())
-app.use(flash());
 app.use(authRoutes);
 app.use(labRoutes);
+app.use(flash());
+app.use(authRoutes);
+app.use(searchRoute);
 
 async function seedDatabase() {
     try {
@@ -78,6 +80,28 @@ function generateSeatReservations(labNum) {
     return seatIDs;
   }
 
+  const users = [
+    { 
+        userID: 'user1',
+        name: 'Ralph',
+        email: 'ralph_rufin@dlsu.edu.ph',
+        password: 'biboomilk',
+        remember: false,
+        role: 'student',
+        jpgFilename: '',
+        txtFilename: ''
+    },
+    { 
+        userID: 'user2',
+        name: 'AJ',
+        email: 'aj_morales@dlsu.edu.ph',
+        password: 'password2',
+        remember: false,
+        role: 'technician',
+        jpgFilename: '',
+        txtFilename: ''
+    }
+];
 
 mongoose.connect('mongodb://localhost:27017/test')
     .then(async () => {

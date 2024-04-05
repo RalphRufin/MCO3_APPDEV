@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technician Reservation</title>
+</head>
+<body>
+    <h1>User Search</h1>
+  
+    <form action="/search" method="POST">
+      <label for="searchTerm">Search Term:</label>
+      <input type="text" id="searchTerm" name="searchTerm" placeholder="Enter email, name, or other criteria">
+      <button type="submit">Search Users</button>
+    </form>
+    <div id="searchResultsContainer">
+        <% if (searchResults.length > 0) { %>
+          <h2>Search Results</h2>
+          <ul>
+            <% searchResults.forEach(user => { %>
+              <li>
+                Email: <%= user.email %>,
+                Name: <%= user.name %>
+              </li>
+            <% }); %>
+          </ul>
+        <% } else { %>
+          <p>No users found matching your criteria.</p>
+        <% } %>
+      </div>
+    </body>
+</html>

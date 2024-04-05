@@ -18,4 +18,6 @@ router.get('/labs/:labId/seats', guest.getSeats);
 
 router.get('/labs/:labId/timeslots', guest.getTimeslots);
 
+router.get('/technician-reservation', guest.getTechnicianReservationPage);
+
 module.exports = router;

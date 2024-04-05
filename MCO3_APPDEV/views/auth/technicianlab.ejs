@@ -6,31 +6,43 @@
 </head>
 <body>
     <h1>Select Lab, Date, Seat, and Time Slot</h1>
-    <form class="labForm" data-user-id="<%= user.userID %>">
+    <form class="labForm">
         <label for="labSelect">Select Lab:</label>
         <select id="labSelect" name="lab">
             <% labs.forEach(lab => { %>
                 <option value="<%= lab._id %>"><%= lab.LabName %></option>
             <% }); %>
         </select>
-
+    
         <label for="dateSelect">Select Date:</label>
         <select id="dateSelect" name="date" disabled>
             <option value="" disabled selected>Select Date</option>
         </select>
-
+    
         <label for="seatSelect">Select Seat:</label>
         <select id="seatSelect" name="seat" disabled>
             <option value="" disabled selected>Select Seat</option>
         </select>
-
+    
         <label for="timeSlotSelect">Select Time Slot:</label>
         <select id="timeSlotSelect" name="timeSlot" disabled>
             <option value="" disabled selected>Select Time Slot</option>
         </select>
-
+    
+        <label for="userSelect">Select User:</label>
+        <select id="userSelect" name="user">
+            <% users.forEach(user => { %>
+                <option value="<%= user._id %>"><%= user.name %></option>
+            <% }); %>
+        </select>
+    
         <button type="submit" id="reserveButton" disabled>Reserve</button>
     </form>
+
+    <select id="logoutSelect">
+        <option value="/labs">Logout</option>
+        <option value="/technician-reservation">Reservations</option>
+    </select>
 
     <script>
         document.getElementById('labSelect').addEventListener('change', async (event) => {
@@ -116,7 +128,9 @@
     const date = document.getElementById('dateSelect').value;
     const seat = document.getElementById('seatSelect').value;
     const timeSlot = document.getElementById('timeSlotSelect').value;
-    const userID = document.querySelector('.labForm').getAttribute('data-user-id');
+
+    const userSelect = document.getElementById('userSelect');
+    const userID = userSelect.value;
 
     console.log('Submitting reservation for:');
     console.log('Lab ID:', labId);
@@ -144,6 +158,11 @@
     }
 });
 
+document.getElementById('logoutSelect').addEventListener('change', () => {
+            const selectedOption = document.getElementById('logoutSelect').value;
+            window.location.href = selectedOption;
+        });
+        
     </script>
 </body>
 </html>

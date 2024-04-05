@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technician Reservation</title>
+</head>
+<body>
+    <h1>Technician Reservation</h1>
+    <ul>
+        <% reservedSlotReservations.forEach(reservation => { %>
+            <li>
+                Lab <%= reservation.lab %>,
+                Seat <%= reservation.seat %>,
+                <%= reservation.date %>,
+                <%= reservation.timeSlot %> Time Slot,
+                Reserved by: <%= reservation.reservee %>
+            </li>
+        <% }); %>
+    </ul>
+    <select id="navigateSelect">
+        <option value="/labs">Labs</option>
+        <option value="/technician-labs">Technician Labs</option>
+    </select>
+
+    <script>
+        document.getElementById('navigateSelect').addEventListener('change', () => {
+            const selectedOption = document.getElementById('navigateSelect').value;
+            window.location.href = selectedOption;
+        });
+    </script>
+</body>
+</html>

@@ -1,103 +1,121 @@
 const User = require('../models/user');
+const Lab = require('../models/lab');
 
 const mongoose = require('mongoose');
-
 const crypt = require('bcryptjs');
 
- exports.getLogin = (req, res, next) => {
-  res.render('auth/login', {
-    path: '/login',                 
-    pageTitle: 'Login',
-    messages: {}
-    
+exports.getLogin = (req, res, next) => {
+    res.render('auth/login', {
+        path: '/login',
+        pageTitle: 'Login',
+        messages: {}
     });
 };
 
 exports.getSignup = (req, res, next) => {
-
     res.render('auth/signup', {
-    path: '/signup',                 
-    pageTitle: 'Signup',
+        path: '/signup',
+        pageTitle: 'Signup',
     });
 };
+
 exports.postLogin = (req, res, next) => {
-  const email = req.body.email;
-  const password = req.body.password;
-  console.log(email, password);
+  const { email, password } = req.body;
+
   User.findOne({ email: email })
-    .then(user => {
-      if (!user) {
-        console.error('Invalid email or password.'); // Log error message
-        return res.redirect('/login');
-      }
-      console.log(user);
-      crypt.compare(password, user.password)
-        .then(doMatch => {
-          if (doMatch) {
-            // Successful login (without sessions)
-            // Consider redirecting to a profile page or dashboard
-            // return res.render('profile', { // Replace with your desired success page
-            //   //user: user // Pass user inf
-            // });
-            //add PATH REDIRECT HERE RALPH 
-            res.redirect('/');
-            console.log('Successfully logged in');
+      .then(user => {
+          if (!user) {
+              console.error('Invalid email or password.'); // Log error message
+              return res.redirect('/login');
           }
-          console.error('Invalid email or password.'); // Log error message
-          return res.redirect('/login');
-        })
-        .catch(err => {
+
+          crypt.compare(password, user.password)
+              .then(doMatch => {
+                  if (doMatch) {
+                      Lab.find()
+                          .then(labs => {
+                              if (user.role === 'student') {
+                                  return res.render('auth/studentlab', {
+                                      user: user,
+                                      labs: labs,
+                                      path: '/studentlab',
+                                      pageTitle: 'Studentlab'
+                                  });
+                              } else if (user.role === 'technician') {
+                                  User.find()
+                                      .then(users => {
+                                          return res.render('auth/technicianlab', {
+                                              users: users,
+                                              labs: labs,
+                                              path: '/technicianlab',
+                                              pageTitle: 'Technicianlab'
+                                          });
+                                      })
+                                      .catch(err => {
+                                          console.log(err);
+                                          res.status(500).send('Error fetching technicians');
+                                      });
+                              } else {
+                                  return res.redirect('/');
+                              }
+                          })
+                          .catch(err => {
+                              console.log(err);
+                              res.status(500).send('Error fetching labs');
+                          });
+                  } else {
+                      console.error('Invalid email or password.');
+                      return res.redirect('/login');
+                  }
+              })
+              .catch(err => {
+                  console.log(err);
+                  res.status(500).send('Error comparing passwords');
+              });
+      })
+      .catch(err => {
           console.error(err);
           return res.redirect('/login');
-        });
-    })
-    .catch(err => console.error(err));
+      });
 };
-
-
 
 exports.postSignup = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
   const name = req.body.name;
-  const confirmPassword = req.body.confirmPassword;
+  const role = req.body.role;
 
-  
   if (!email || !password || !name) {
-    return res.redirect('/signup'); 
-    console.log ('Missing fields');
+      return res.redirect('/signup');
+      console.log('Missing fields');
   }
 
   User.findOne({ email: email })
-    .then(userDoc => {
-      if (userDoc) {
-        return res.redirect('/signup'); 
-        console.log ('Email already found');
-      }
-      return crypt
-      .hash(password, 12)
-      .then(hashedPassword => {
-        const newUser = new User({
-          userID: new mongoose.Types.ObjectId(), 
-          name: name, 
-          email: email,
-          password: hashedPassword 
-        });
-        return newUser.save();
+      .then(userDoc => {
+          if (userDoc) {
+              return res.redirect('/signup');
+              console.log('Email already found');
+          }
+          return crypt
+              .hash(password, 12)
+              .then(hashedPassword => {
+                  const newUser = new User({
+                      userID: new mongoose.Types.ObjectId(),
+                      name: name,
+                      email: email,
+                      password: hashedPassword,
+                      role: role
+                  });
+                  return newUser.save()
+                      .then(() => {
+                          res.redirect('/login');
+                      });
+              });
       })
-      .then(result => {
-      //   res.redirect('/login');
-      })
-      
-    })
-    
-    .catch(err => {
-      console.error(err);
-      res.redirect('/signup'); // Redirect back to signup on any error
-    });
+      .catch(err => {
+          console.error(err);
+          res.redirect('/signup');
+      });
 };
 
 
-// exports.postLogout = (req, res, next) => {
-
-// };

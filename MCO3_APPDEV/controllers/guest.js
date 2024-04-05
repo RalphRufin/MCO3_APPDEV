@@ -66,13 +66,14 @@ exports.getSlotReservationByIdentifier = async (req, res, next) => {
 
 exports.reserveSlot = async (req, res, next) => {
     const { labId } = req.params;
-    const { date, seat, timeSlot } = req.query;
+    const { date, seat, timeSlot, userID } = req.query;
 
     try {
         console.log('Lab ID:', labId);
         console.log('Date:', date);
         console.log('Seat:', seat);
         console.log('Time Slot:', timeSlot);
+        console.log('User ID:', userID);
 
         const lab = await Lab.findById(labId);
         console.log('Lab:', lab);
@@ -106,7 +107,7 @@ exports.reserveSlot = async (req, res, next) => {
             return res.status(404).json({ message: 'Slot reservation not found for the given time slot' });
         }
 
-        slotReservation.reservee = "user";
+        slotReservation.reservee = userID;
         slotReservation.state = true;
 
         await lab.save();
@@ -118,6 +119,7 @@ exports.reserveSlot = async (req, res, next) => {
         res.status(500).json({ message: 'Internal Server Error' });
     }
 };
+
 
 exports.getDates = async (req, res) => {
     try {
@@ -186,3 +188,44 @@ exports.getTimeslots = async (req, res) => {
         res.status(500).json({ message: 'Internal Server Error' });
     }
 };
+
+exports.getTechnicianReservationPage = async (req, res, next) => {
+    try {
+        const labs = await Lab.find();
+        const formattedSlotReservations = [];
+
+        for (const lab of labs) {
+            for (const seatReservation of lab.SeatReservations) {
+                for (const seat of seatReservation.Seats) {
+                    const seatID = seat.SeatID;
+                    for (const slotReservation of seat.SlotReservations) {
+                        if (slotReservation.state === "true") {
+                            const identifierParts = slotReservation.identifier.split('');
+                            const labNumber = identifierParts[0];
+                            const date = identifierParts.slice(1, identifierParts.length - 12).join('');
+                            const timeSlot = identifierParts.slice(-4).join(':');
+                            formattedSlotReservations.push({
+                                lab: labNumber,
+                                seat: seatID,
+                                date: date,
+                                timeSlot: timeSlot,
+                                reservee: slotReservation.reservee
+                            });
+                        }
+                    }
+                }
+            }
+        }
+
+        res.render('auth/technicianreservation', {
+            reservedSlotReservations: formattedSlotReservations,
+            path: '/technicianreservation',                 
+            pageTitle: 'Technicianreservation'
+        });
+    } catch (error) {
+        console.error('Error fetching reserved slot reservations:', error);
+        res.status(500).send('Internal Server Error');
+    }
+};
+
+
