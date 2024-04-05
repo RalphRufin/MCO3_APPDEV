@@ -65,36 +65,54 @@ exports.getSlotReservationByIdentifier = async (req, res, next) => {
 };
 
 exports.reserveSlot = async (req, res, next) => {
-    const { identifier, reservee, state } = req.body;
+    const { labId } = req.params;
+    const { date, seat, timeSlot } = req.query;
 
     try {
-        const labs = await Lab.find({ 'SeatReservations.Seats.SlotReservations.identifier': identifier });
-        if (!labs || labs.length === 0) {
-            return res.status(404).json({ message: 'Slot reservation not found' });
+        console.log('Lab ID:', labId);
+        console.log('Date:', date);
+        console.log('Seat:', seat);
+        console.log('Time Slot:', timeSlot);
+
+        const lab = await Lab.findById(labId);
+        console.log('Lab:', lab);
+        
+        if (!lab) {
+            console.log('Lab not found');
+            return res.status(404).json({ message: 'Lab not found' });
         }
 
-        let updated = false;
-
-        labs.forEach(lab => {
-            lab.SeatReservations.forEach(seatReservation => {
-                seatReservation.Seats.forEach(seat => {
-                    const slotIndex = seat.SlotReservations.findIndex(slot => slot.identifier === identifier);
-                    if (slotIndex !== -1) {
-                        seat.SlotReservations[slotIndex].reservee = reservee;
-                        seat.SlotReservations[slotIndex].state = state;
-                        updated = true;
-                    }
-                });
-            });
-        });
-
-        if (!updated) {
-            return res.status(404).json({ message: 'Slot reservation not found' });
+        const seatReservations = lab.SeatReservations.find(seatReservation => seatReservation.Date === date);
+        console.log('Seat Reservations:', seatReservations);
+        
+        if (!seatReservations) {
+            console.log('Seat reservation not found for the given date');
+            return res.status(404).json({ message: 'Seat reservation not found for the given date' });
         }
 
-        await Promise.all(labs.map(lab => lab.save()));
+        const seatReservation = seatReservations.Seats.find(s => s.SeatID === seat);
+        console.log('Seat Reservation:', seatReservation);
+        
+        if (!seatReservation) {
+            console.log('Seat reservation not found for the given seat');
+            return res.status(404).json({ message: 'Seat reservation not found for the given seat' });
+        }
 
-        res.status(200).json({ message: 'Slot reservation updated successfully' });
+        const slotReservation = seatReservation.SlotReservations.find(slot => slot.timeSlot === timeSlot);
+        console.log('Slot Reservation:', slotReservation);
+        
+        if (!slotReservation) {
+            console.log('Slot reservation not found for the given time slot');
+            return res.status(404).json({ message: 'Slot reservation not found for the given time slot' });
+        }
+
+        slotReservation.reservee = "user";
+        slotReservation.state = true;
+
+        await lab.save();
+
+        console.log('Slot reserved successfully');
+        res.status(200).json({ message: 'Slot reserved successfully' });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal Server Error' });
