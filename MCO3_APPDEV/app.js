@@ -1,6 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const flash = require('connect-flash');
+const session =  require('express-session');
 
 const User = require('./models/user');
 const Lab = require('./models/lab');
@@ -14,7 +16,8 @@ const authRoutes = require('./routes/auth');
 const labRoutes = require('./routes/labs');
 
 app.use(bodyParser.urlencoded({ extended: false }));
-
+app.use(session())
+app.use(flash());
 app.use(authRoutes);
 app.use(labRoutes);
 
