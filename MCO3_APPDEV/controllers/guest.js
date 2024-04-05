@@ -228,4 +228,44 @@ exports.getTechnicianReservationPage = async (req, res, next) => {
     }
 };
 
+exports.getStudentReservationPage = async (req, res, next) => {
+    try {
+        const { userID } = req.params;
+
+        const labs = await Lab.find();
+        const formattedSlotReservations = [];
+
+        for (const lab of labs) {
+            for (const seatReservation of lab.SeatReservations) {
+                for (const seat of seatReservation.Seats) {
+                    const seatID = seat.SeatID;
+                    for (const slotReservation of seat.SlotReservations) {
+                        if (slotReservation.state === "true" && slotReservation.reservee === userID) {
+                            const identifierParts = slotReservation.identifier.split('');
+                            const labNumber = identifierParts[0];
+                            const date = identifierParts.slice(1, identifierParts.length - 12).join('');
+                            const timeSlot = identifierParts.slice(-4).join(':');
+                            formattedSlotReservations.push({
+                                lab: labNumber,
+                                seat: seatID,
+                                date: date,
+                                timeSlot: timeSlot,
+                                reservee: slotReservation.reservee
+                            });
+                        }
+                    }
+                }
+            }
+        }
+
+        res.render('auth/studentreservation', {
+            reservedSlotReservations: formattedSlotReservations,
+            path: '/studentreservation',
+            pageTitle: 'Student Reservation'
+        });
+    } catch (error) {
+        console.error('Error fetching reserved slot reservations:', error);
+        res.status(500).send('Internal Server Error');
+    }
+};
 

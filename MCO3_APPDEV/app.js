@@ -18,7 +18,7 @@ const labRoutes = require('./routes/labs');
 const searchRoute = require('./routes/search');
 
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(session());
+//app.use(session());
 app.use(flash());
 app.use(authRoutes);
 app.use(labRoutes);

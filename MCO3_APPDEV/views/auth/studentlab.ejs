@@ -44,8 +44,16 @@
                   </div>
                 <button type="submit" id="reserveButton" disabled>Reserve</button>
             </form>
+            <input type="hidden" id="userID" value="<%= user.userID %>">
+            <button id="myReservationsButton" onclick="redirectToMyReservations()">My Reservations</button>
+    </div>
     </div>
     <script>
+        const userID = document.getElementById('userID').value;
+
+        async function redirectToMyReservations() {
+            window.location.href = `/student-reservation/${userID}`;
+        }
         document.getElementById('labSelect').addEventListener('change', async (event) => {
             const labId = event.target.value;
             const dateSelect = document.getElementById('dateSelect');
@@ -122,41 +130,39 @@
     }
     });
 
-    document.querySelector('.labForm').addEventListener('submit', async (event) => {
-    event.preventDefault();
+        document.querySelector('.labForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
 
-    const labId = document.querySelector('[name="lab"]').value;
-    const date = document.getElementById('dateSelect').value;
-    const seat = document.getElementById('seatSelect').value;
-    const timeSlot = document.getElementById('timeSlotSelect').value;
-    const userID = document.querySelector('.labForm').getAttribute('data-user-id');
+            const labId = document.querySelector('[name="lab"]').value;
+            const date = document.getElementById('dateSelect').value;
+            const seat = document.getElementById('seatSelect').value;
+            const timeSlot = document.getElementById('timeSlotSelect').value;
 
-    console.log('Submitting reservation for:');
-    console.log('Lab ID:', labId);
-    console.log('Date:', date);
-    console.log('Seat:', seat);
-    console.log('Time Slot:', timeSlot);
-    console.log('User ID:', userID);
+            console.log('Submitting reservation for:');
+            console.log('Lab ID:', labId);
+            console.log('Date:', date);
+            console.log('Seat:', seat);
+            console.log('Time Slot:', timeSlot);
+            console.log('User ID:', userID);
 
-    try {
-        const response = await fetch(`/reserve-slot/${labId}?date=${date}&seat=${seat}&timeSlot=${timeSlot}&userID=${userID}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
+            try {
+                const response = await fetch(`/reserve-slot/${labId}?date=${date}&seat=${seat}&timeSlot=${timeSlot}&userID=${userID}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('Reservation successful:', data.message);
+                } else {
+                    console.error('Reservation failed:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error reserving slot:', error);
             }
         });
-
-        if (response.ok) {
-            const data = await response.json();
-            console.log('Reservation successful:', data.message);
-        } else {
-            console.error('Reservation failed:', response.statusText);
-        }
-    } catch (error) {
-        console.error('Error reserving slot:', error);
-    }
-});
-
     </script>
 </body>
 </html>

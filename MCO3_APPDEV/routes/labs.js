@@ -20,4 +20,6 @@ router.get('/labs/:labId/timeslots', guest.getTimeslots);
 
 router.get('/technician-reservation', guest.getTechnicianReservationPage);
 
+router.get('/student-reservation/:userID', guest.getStudentReservationPage);
+
 module.exports = router;
