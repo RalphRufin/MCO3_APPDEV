@@ -97,6 +97,55 @@ body {
     background-color: #0056b3;
 }
 
+.dropbtn {
+    background-color: #FF884D; /* Change background color to dark orange */
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    float: right; /* Move the menu button to the right */
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.profile-dropdown {
+    display: none;
+    position: absolute;
+    background-color: #FF884D;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    top: 100%; 
+    left: 0; 
+}
+.pfp {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: block;
+    margin: auto; /* Center the image horizontally */
+}
+
+.dropdown-content a {
+    color: white;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    font-weight: bold;
+}
+
+.dropdown-content a:hover {
+    background-color: lightsalmon; 
+}
+
+.dropdown:hover .profile-dropdown {
+    display: block;
+}
 </style>
 <body>
     <div class="menu"> 
@@ -109,10 +158,10 @@ body {
     <div class="profile-dropdown">
         <img class="pfp" src="<%= user.jpgFilename %>" />
         <div class="dropdown-content">
-            <a href="/roleredirect/<%= user._id %>">Labs</a>
+            <a href="<%= user.role === 'student' ? '/studentLabs' : '/technicianLabs' %>">Labs</a>
             <a href="/user/<%= user._id %>">My Profile</a>
-            <a href="/roleredirectres/<%= user._id %>">My Reservations</a>
-            <a href="/search">Search</a>
+            <a href="<%= user.role === 'student' ? '/student-reservation/' + user._id : '/technician-reservation/' + user._id %>">My Reservations</a>
+            <a href="/search/<%= user._id %>">Search</a>
             <a href="/labs">Logout</a>
         </div>
     </div>
@@ -123,7 +172,7 @@ body {
         <div class="profile-edit-header">
             <h1>Edit <%= user.name %>'s Profile</h1>
         </div>
-        <form action="/user/edit/<%= user._id %>" method="POST" enctype="multipart/form-data" name = >
+        <form action="/user/edit/<%= user._id %>" method="POST" enctype="multipart/form-data">
             <label for="description">Description:</label>
             <textarea name="description" rows="4" placeholder="Enter a description"><%= user.txtFilename %></textarea>
             <br>

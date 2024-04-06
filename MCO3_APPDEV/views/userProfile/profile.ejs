@@ -59,6 +59,60 @@
             display: block;
             margin: 0 auto; /* Center the image horizontally */
         }
+
+        .dropbtn {
+            background-color: #FF884D; /* Change background color to dark orange */
+            color: white;
+            padding: 16px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            float: right; /* Move the menu button to the right */
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            float: right;
+            margin-top: 15px; 
+            margin-right: 10px;
+        }
+
+        .profile-dropdown {
+            display: none;
+            position: absolute;
+            background-color: #FF884D;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            top: 100%;
+            right: 5px; 
+        }
+
+        .pfp {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: block;
+            margin: auto; /* Center the image horizontally */
+        }
+
+        .dropdown-content a {
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            font-weight: bold;
+        }
+
+        .dropdown-content a:hover {
+            background-color: lightsalmon; /* Change hover background color to light orange */
+        }
+
+        .dropdown:hover .profile-dropdown {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -68,18 +122,18 @@
                 <img class="logo" src="../imgs/LabrYnth.png" />
             </a>
             <div class="dropdown">
-    <button class="dropbtn">Menu</button>
-    <div class="profile-dropdown">
-        <img class="pfp" src="<%= user.jpgFilename %>" />
-        <div class="dropdown-content">
-            <a href="/roleredirect/<%= user._id %>">Labs</a>
-            <a href="/user/edit/<%= user._id %>">Edit Profile</a>
-            <a href="/roleredirectres/<%= user._id %>">My Reservations</a>
-            <a href="/search">Search</a>
-            <a href="/labs">Logout</a>
-        </div>
-    </div>
-  </div>
+                <button class="dropbtn">Menu</button>
+                <div class="profile-dropdown">
+                    <img class="pfp" src="<%= user.jpgFilename %>" />
+                    <div class="dropdown-content">
+                        <a href="<%= user.role === 'student' ? '/studentLabs' : '/technicianLabs' %>">Labs</a>
+                        <a href="/user/edit/<%= user._id %>">Edit Profile</a>
+                        <a href="<%= user.role === 'student' ? '/student-reservation/' + user._id : '/technician-reservation/' + user._id %>">My Reservations</a>
+                        <a href="/search/<%= user._id %>">Search</a>
+                        <a href="/labs">Logout</a>
+                    </div>
+                </div>
+            </div>
         </div>  
     </div>
     <div class="profile-container">
@@ -87,16 +141,12 @@
             <h1><%= user.name %>'s Profile</h1>
         </div>
         <div class="profile-info">
-            
             <div class="profile-image-container">
                 <img src="/<%= user.jpgFilename %>" alt="Profile Image" class="profile-image">
             </div>
-            
-            
             <p>Email: <%= user.email %></p>
             <p>Role: <%= user.role %></p>
             <p>Description: <%= user.txtFilename %></p>
-            
             <a href="/search">Back to Home</a>
         </div>
     </div>

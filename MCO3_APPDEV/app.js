@@ -120,24 +120,49 @@ function generateSeatReservations(labNum) {
 
   const users = [
     { 
-        userID: 'user1',
-        name: 'Ralph',
-        email: 'ralph_rufin@dlsu.edu.ph',
-        password: 'biboomilk',
-        remember: false,
-        role: 'student',
-        jpgFilename: '',
-        txtFilename: ''
+        userID: "66116c4473487891de057251",
+        name: "Ralph Rufin",
+        email: "ubergem05@gmail.com",
+        password: "$2a$12$9/pnyR0vE5fG0K0TQBN0O.J.T.KkySCea6lhWnlCPKQYhhiiCK0E6",
+        role: "technician",
+        jpgFilename: "images/9d1c5f14116e7ac62798f733847ac333.jpg-9d1c5f14116e7ac62798f733847ac333.jpg",
+        txtFilename: ""
     },
     { 
-        userID: 'user2',
-        name: 'AJ',
-        email: 'aj_morales@dlsu.edu.ph',
-        password: 'password2',
-        remember: false,
-        role: 'technician',
-        jpgFilename: '',
-        txtFilename: ''
+      userID: "66116c4473487891de057253",
+      name: "AJ",
+      email: "ubergem03@gmail.com",
+      password: "$2a$12$9/pnyR0vE5fG0K0TQBN0O.J.T.KkySCea6lhWnlCPKQYhhiiCK0E6",
+      role: "student",
+      jpgFilename: "images/9d1c5f14116e7ac62798f733847ac333.jpg-9d1c5f14116e7ac62798f733847ac333.jpg",
+      txtFilename: "gello"
+    },
+    { 
+      userID: "66116c4473487891de057252",
+      name: "Slacker1",
+      email: "ubergem02@gmail.com",
+      password: "$2a$12$9/pnyR0vE5fG0K0TQBN0O.J.T.KkySCea6lhWnlCPKQYhhiiCK0E6",
+      role: "student",
+      jpgFilename: "images/9d1c5f14116e7ac62798f733847ac333.jpg-9d1c5f14116e7ac62798f733847ac333.jpg",
+      txtFilename: "gello1"
+    },
+    { 
+      userID: "66116c4473487891de057254",
+      name: "Slacker2",
+      email: "ubergem01@gmail.com",
+      password: "$2a$12$9/pnyR0vE5fG0K0TQBN0O.J.T.KkySCea6lhWnlCPKQYhhiiCK0E6",
+      role: "technician",
+      jpgFilename: "images/9d1c5f14116e7ac62798f733847ac333.jpg-9d1c5f14116e7ac62798f733847ac333.jpg",
+      txtFilename: "gello12"
+    },
+    { 
+      userID: "66116c4473487891de057255",
+      name: "Slacker2",
+      email: "ubergem01@gmail.com",
+      password: "$2a$12$9/pnyR0vE5fG0K0TQBN0O.J.T.KkySCea6lhWnlCPKQYhhiiCK0E6",
+      role: "student",
+      jpgFilename: "images/9d1c5f14116e7ac62798f733847ac333.jpg-9d1c5f14116e7ac62798f733847ac333.jpg",
+      txtFilename: "gello123"
     }
 ];
 
