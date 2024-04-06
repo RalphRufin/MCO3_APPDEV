@@ -6,6 +6,26 @@
     <link rel="stylesheet" href="/MCO3_APPDEV/public/css/techlab.css">
 </head>
 <body>
+    <div class="menu"> 
+        <div class="menu-header"> 
+            <a href="/labs">
+                <img class="logo" src="../imgs/LabrYnth.png" />
+            </a>
+            <div class="dropdown">
+                <button class="dropbtn">Menu</button>
+                <div class="profile-dropdown">
+                    <img class="pfp" src="<%= user.jpgFilename %>" />
+                    <div class="dropdown-content">
+                        <a href="/technician-reservation/<%= user._id %>">My Reservations</a>
+                        <a href="/user/edit/<%= user._id %>">Edit Profile</a>
+                        <a href="/user/<%= user._id %>">My Profile</a>
+                        <a href="/search">Search</a>
+                        <a href="/logout">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>  
+    </div>
     <h1>Select Lab, Date, Seat, and Time Slot</h1>
     <form class="labForm">
         <label for="labSelect">Select Lab:</label>

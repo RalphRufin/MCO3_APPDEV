@@ -82,33 +82,32 @@ async function seedDatabase() {
 }
 
 function generateSeatReservations(labNum) {
-    const seatReservations = [];
-    const startDate = new Date('2024-04-01');
-    const endDate = new Date('2024-04-30');
-    const seatIDs = generateSeatIDs(labNum);
-  
-    let currentDate = new Date(startDate);
-    while (currentDate <= endDate) {
-      const dateFormatted = currentDate.toISOString().split('T')[0];
-      const seats = seatIDs.map(seatID => {
-        const slotReservations = [];
-        for (let i = 0; i < 12; i++) {
-          const hour = i < 4 ? '10' : i < 8 ? '13' : '15';
-          const minutes = i % 4 ? '30' : '00';
-          const timeSlot = `${hour}:${minutes}`;
-          const identifier = `${seatID}${dateFormatted}${hour}${minutes}`;
-          const reservee = null;
-          const state = false;
-          slotReservations.push({ timeSlot: timeSlot, identifier: identifier, reservee: reservee, state: state });
-        }
-        return { SeatID: seatID, Identifier: `${seatID}${dateFormatted}`, SlotReservations: slotReservations };
-      });
-      seatReservations.push({ Date: dateFormatted, Seats: seats });
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
-    return seatReservations;
+  const seatReservations = [];
+  const startDate = new Date('2024-04-01');
+  const endDate = new Date('2024-04-30');
+  const seatIDs = generateSeatIDs(labNum);
+
+  let currentDate = new Date(startDate);
+  while (currentDate <= endDate) {
+    const dateFormatted = currentDate.toISOString().split('T')[0];
+    const seats = seatIDs.map(seatID => {
+      const slotReservations = [];
+      for (let i = 0; i <= 12; i++) {
+        const hour = 10 + Math.floor(i / 2);
+        const minutes = i % 2 ? '30' : '00';
+        const timeSlot = `${hour}:${minutes}`;
+        const identifier = `${seatID}${dateFormatted}${hour}${minutes}`;
+        const reservee = null;
+        const state = false;
+        slotReservations.push({ timeSlot, identifier, reservee, state });
+      }
+      return { SeatID: seatID, Identifier: `${seatID}${dateFormatted}`, SlotReservations: slotReservations };
+    });
+    seatReservations.push({ Date: dateFormatted, Seats: seats });
+    currentDate.setDate(currentDate.getDate() + 1);
   }
-  
+  return seatReservations;
+}
   
   function generateSeatIDs(labNum) {
     const seatIDs = [];

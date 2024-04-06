@@ -1,4 +1,5 @@
 const Lab = require('../models/lab');
+const User = require('../models/user');
 
 exports.getLabs = (req, res, next) => {
     Lab.find()
@@ -233,12 +234,20 @@ exports.getTechnicianReservationPage = async (req, res, next) => {
             }
         }
 
+        User.findById(userID)
+        .then(users => {
+        if (!users) {
+            console.error('Invalid email or password.');
+            return res.redirect('/technicianLabs');
+        }
         res.render('auth/technicianreservation', {
             reservedSlotReservations: formattedSlotReservations,
+            user: users,
             labs: labs,
-            path: '/technicianreservation',                 
-            pageTitle: 'Technicianreservation'
+            path: '/technicianreservation',
+            pageTitle: 'Technician Reservation'
         });
+    })
     } catch (error) {
         console.error('Error fetching reserved slot reservations:', error);
         res.status(500).send('Internal Server Error');
@@ -375,7 +384,6 @@ exports.deleteReservation = async (req, res) => {
 exports.getStudentReservationPage = async (req, res, next) => {
     try {
         const { userID } = req.params;
-
         const labs = await Lab.find();
         const formattedSlotReservations = [];
 
@@ -402,13 +410,24 @@ exports.getStudentReservationPage = async (req, res, next) => {
                 }
             }
         }
-
+        User.findById(userID)
+        .then(users => {
+        if (!users) {
+            console.error('Invalid email or password.');
+            return res.redirect('/studentLabs');
+        }
         res.render('auth/studentreservation', {
             reservedSlotReservations: formattedSlotReservations,
+            user: users,
             labs: labs,
             path: '/studentreservation',
             pageTitle: 'Student Reservation'
         });
+    })
+    .catch(error => {
+        console.error('Error finding user:', error);
+        res.redirect('/studentLabs');
+    });
     } catch (error) {
         console.error('Error fetching reserved slot reservations:', error);
         res.status(500).send('Internal Server Error');

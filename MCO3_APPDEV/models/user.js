@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema({
  role: String,
  jpgFilename: {
     type: String,
-    default: "" 
+    default: "images/9d1c5f14116e7ac62798f733847ac333.jpg-9d1c5f14116e7ac62798f733847ac333.jpg" 
  },
  txtFilename: {
     type: String,
