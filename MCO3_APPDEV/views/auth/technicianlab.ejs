@@ -38,14 +38,18 @@
         </select>
     
         <button type="submit" id="reserveButton" disabled>Reserve</button>
+        <input type="hidden" id="userID" value="<%= user._id %>">
     </form>
 
     <select id="logoutSelect">
         <option value="/labs">Logout</option>
-        <option value="/technician-reservation">Reservations</option>
+        <option value="/technician-reservation/${userID}">Reservations</option>
     </select>
 
     <script>
+        async function redirectToMyReservations() {
+            window.location.href = `/technician-reservation/${userID}`;
+        }
         document.getElementById('labSelect').addEventListener('change', async (event) => {
             const labId = event.target.value;
             const dateSelect = document.getElementById('dateSelect');

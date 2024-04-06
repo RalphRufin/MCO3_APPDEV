@@ -44,7 +44,7 @@
                   </div>
                 <button type="submit" id="reserveButton" disabled>Reserve</button>
             </form>
-            <input type="hidden" id="userID" value="<%= user.userID %>">
+            <input type="hidden" id="userID" value="<%= user._id %>">
             <button id="myReservationsButton" onclick="redirectToMyReservations()">My Reservations</button>
     </div>
     </div>
@@ -118,8 +118,8 @@
 
         timeSlots.forEach(timeSlot => {
             const option = document.createElement('option');
-            option.value = timeSlot;
-            option.text = timeSlot;
+            option.value = timeSlot.timeSlot;
+            option.text = `${timeSlot.timeSlot} ${timeSlot.state ? 'Available' : 'Reserved'}`;
             timeSlotSelect.add(option);
         });
 

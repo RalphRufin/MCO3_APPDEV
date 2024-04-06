@@ -7,27 +7,189 @@
 </head>
 <body>
     <h1>Student Reservation</h1>
-    <ul>
+
+    <select id="reservationSelect">
         <% reservedSlotReservations.forEach(reservation => { %>
-            <li>
+            <option value="<%= reservation.ID %>">
                 Lab <%= reservation.lab %>,
                 Seat <%= reservation.seat %>,
                 <%= reservation.date %>,
                 <%= reservation.timeSlot %> Time Slot,
                 Reserved by: <%= reservation.reservee %>
-            </li>
+            </option>
         <% }); %>
-    </ul>
+    </select>
+
+    <h2>Edit Reservation</h2>
+    <form id="editForm">
+        <label for="labSelect">Select Lab:</label>
+        <select id="labSelect" name="lab">
+            <% labs.forEach(lab => { %>
+                <option value="<%= lab._id %>"><%= lab.LabName %></option>
+            <% }); %>
+        </select>
+
+        <label for="dateSelect">Select Date:</label>
+        <select id="dateSelect" name="date" disabled></select>
+
+        <label for="seatSelect">Select Seat:</label>
+        <select id="seatSelect" name="seat" disabled></select>
+
+        <label for="timeSlotSelect">Select Time Slot:</label>
+        <select id="timeSlotSelect" name="timeSlot" disabled></select>
+
+        <button type="submit" id="confirmButton" disabled>Confirm Edit</button>
+    </form>
+
+    <button id="deleteButton">Delete Reservation</button>
+
     <select id="navigateSelect">
         <option value="/labs">Labs</option>
         <option value="/studentLabs">Student Labs</option>
     </select>
 
     <script>
-        document.getElementById('navigateSelect').addEventListener('change', () => {
-            const selectedOption = document.getElementById('navigateSelect').value;
-            window.location.href = selectedOption;
+        const labSelect = document.getElementById('labSelect');
+        const dateSelect = document.getElementById('dateSelect');
+        const seatSelect = document.getElementById('seatSelect');
+        const timeSlotSelect = document.getElementById('timeSlotSelect');
+
+    labSelect.addEventListener('change', async (event) => {
+    const labId = event.target.value;
+    const dateSelect = document.getElementById('dateSelect');
+    dateSelect.innerHTML = '<option value="" disabled selected>Loading Dates...</option>';
+
+    try {
+        const response = await fetch(`/labs/${labId}/dates`);
+        const dates = await response.json();
+
+        dateSelect.innerHTML = '<option value="" disabled selected>Select Date</option>';
+        dates.forEach(date => {
+            const option = document.createElement('option');
+            option.value = date;
+            option.text = date;
+            dateSelect.add(option);
         });
+
+        dateSelect.disabled = false;
+    } catch (error) {
+        console.error('Error fetching dates:', error);
+        dateSelect.innerHTML = '<option value="" disabled selected>Error fetching dates</option>';
+    }
+});
+
+    dateSelect.addEventListener('change', async (event) => {
+    const labId = labSelect.value;
+    const date = event.target.value;
+    console.log('Selected Date:', date);
+    const seatSelect = document.getElementById('seatSelect');
+    seatSelect.innerHTML = '<option value="" disabled selected>Loading Seats...</option>';
+
+    try {
+        const response = await fetch(`/labs/${labId}/seats?date=${date}`);
+        const seats = await response.json();
+
+        seatSelect.innerHTML = '<option value="" disabled selected>Select Seat</option>';
+        seats.forEach(seat => {
+            const option = document.createElement('option');
+            option.value = seat;
+            option.text = seat;
+            seatSelect.add(option);
+        });
+
+        seatSelect.disabled = false;
+    } catch (error) {
+        console.error('Error fetching seats:', error);
+        seatSelect.innerHTML = '<option value="" disabled selected>Error fetching seats</option>';
+    }
+});
+
+seatSelect.addEventListener('change', async (event) => {
+    const labId = labSelect.value;
+    const date = dateSelect.value;
+    const seat = event.target.value;
+
+    try {
+        const response = await fetch(`/labs/${labId}/timeslots?date=${date}&seat=${seat}`);
+        const timeSlots = await response.json();
+
+        timeSlotSelect.innerHTML = '';
+        timeSlots.forEach(timeSlot => {
+            const option = document.createElement('option');
+            option.value = timeSlot.timeSlot;
+            option.text = `${timeSlot.timeSlot} ${timeSlot.state ? 'Available' : 'Reserved'}`;
+            timeSlotSelect.add(option);
+        });
+
+        timeSlotSelect.disabled = false;
+        document.getElementById('confirmButton').disabled = false;
+        document.getElementById('deleteButton').disabled = false;
+    } catch (error) {
+        console.error(error);
+    }
+    });
+
+    document.getElementById('confirmButton').addEventListener('click', async (event) => {
+    event.preventDefault();
+
+    const reservationId = document.getElementById('reservationSelect').value;
+    const labId = document.getElementById('labSelect').value;
+    const date = document.getElementById('dateSelect').value;
+    const seat = document.getElementById('seatSelect').value;
+    const timeSlot = document.getElementById('timeSlotSelect').value;
+
+    console.log('Editing reservation for:');
+    console.log('Reservation ID:', reservationId);
+    console.log('New Lab ID:', labId);
+    console.log('New Date:', date);
+    console.log('New Seat:', seat);
+    console.log('New Time Slot:', timeSlot);
+
+    try {
+        const response = await fetch(`/edit-reservation/${reservationId}/${labId}/${date}/${seat}/${timeSlot}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            console.log('Reservation edited successfully:', data.message);
+        } else {
+            console.error('Edit reservation failed:', response.statusText);
+        }
+    } catch (error) {
+        console.error('Error editing reservation:', error);
+    }
+});
+
+document.getElementById('deleteButton').addEventListener('click', async (event) => {
+    event.preventDefault();
+
+    const reservationId = document.getElementById('reservationSelect').value;
+
+    console.log('Deleting reservation with ID:', reservationId);
+
+    try {
+        const response = await fetch(`/delete-reservation/${reservationId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            console.log('Reservation deleted successfully:', data.message);
+        } else {
+            console.error('Delete reservation failed:', response.statusText);
+        }
+    } catch (error) {
+        console.error('Error deleting reservation:', error);
+    }
+});
+
     </script>
 </body>
 </html>

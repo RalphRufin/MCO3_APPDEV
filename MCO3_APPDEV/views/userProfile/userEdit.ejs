@@ -66,7 +66,7 @@
 <<body>
     <div class="profile-edit-container">
         <div class="profile-edit-header">
-            <h1>Edit <%= user.id %>'s Profile</h1>
+            <h1>Edit <%= user.name %>'s Profile</h1>
         </div>
         <form action="/user/edit/<%= user._id %>" method="POST" enctype="multipart/form-data">
             <label for="description">Description:</label>

@@ -69,6 +69,7 @@ exports.postLogin = (req, res, next) => {
                                          User.find()
                                              .then(users => {
                                                  return res.render('auth/technicianlab', {
+                                                    user: user,
                                                     users: users,
                                                     labs: labs,
                                                     path: '/technicianlab',

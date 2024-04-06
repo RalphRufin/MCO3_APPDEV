@@ -32,6 +32,22 @@ exports.getLabS = (req, res, next) => {
         });
 };
 
+exports.getLabT = (req, res, next) => {
+    Lab.find()
+        .then(labs => {
+            console.log('Retrieved labs:', labs);
+            res.render('auth/studentlab', {
+                labs: labs,
+                path: '/studentlab',                 
+                pageTitle: 'Studentlab'
+            });
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).send('Error fetching labs');
+        });
+};
+
 exports.getSlotReservationByIdentifier = async (req, res, next) => {
     const { identifier } = req.params;
 
@@ -219,12 +235,140 @@ exports.getTechnicianReservationPage = async (req, res, next) => {
 
         res.render('auth/technicianreservation', {
             reservedSlotReservations: formattedSlotReservations,
+            labs: labs,
             path: '/technicianreservation',                 
             pageTitle: 'Technicianreservation'
         });
     } catch (error) {
         console.error('Error fetching reserved slot reservations:', error);
         res.status(500).send('Internal Server Error');
+    }
+};
+
+exports.editReservation = async (req, res) => {
+    const { reservationId, labId, date, seat, timeSlot } = req.params;
+
+    try {
+        console.log('Received request to edit reservation.');
+        console.log('Reservation ID:', reservationId);
+        console.log('Lab ID:', labId);
+        console.log('Date:', date);
+        console.log('Seat:', seat);
+        console.log('Time Slot:', timeSlot);
+
+        const lab = await Lab.findOne({ 'SeatReservations.Seats.SlotReservations._id': reservationId });       
+        if (!lab) {
+            console.log('Lab not found.');
+            return res.status(404).json({ message: 'Lab not found' });
+        }
+
+        console.log('Lab found:', lab);
+
+        let oldReservation;
+        let selectedSeat;
+        let selectedSlot;
+
+        lab.SeatReservations.forEach(reservation => {
+            reservation.Seats.forEach(s => {
+                s.SlotReservations.forEach(slot => {
+                    if (slot._id.toString() === reservationId) {
+                        oldReservation = slot;
+                        selectedSeat = s;
+                        selectedSlot = slot;
+                    }
+                });
+            });
+        });
+
+        if (!oldReservation) {
+            console.log('Reservation not found.');
+            return res.status(404).json({ message: 'Reservation not found' });
+        }
+
+        console.log('Old reservation found:', oldReservation);
+
+        const labToUpdate = await Lab.findById(labId);
+
+        const newReservation = labToUpdate.SeatReservations.find(reservation => reservation.Date === date);
+        if (!newReservation) {
+        console.log('Reservation not found for the specified date.');
+        return res.status(404).json({ message: 'Reservation not found for the specified date' });
+        }
+
+        const selectedSeats = newReservation.Seats.find(s => s.SeatID === seat);
+        if (!selectedSeat) {
+        console.log('Seat not found.');
+        return res.status(404).json({ message: 'Seat not found' });
+        }
+
+        const newSlot = selectedSeats.SlotReservations.find(slot => slot.timeSlot === timeSlot);
+        if (!newSlot) {
+        console.log('Slot not found.');
+        return res.status(404).json({ message: 'Slot not found' });
+        }
+
+        if (!newSlot) {
+            console.log('New slot not found.');
+            return res.status(404).json({ message: 'New slot not found' });
+        }
+
+        console.log('New slot found:', newSlot);
+        const oldSlot = oldReservation;
+
+        const tempReservee = oldReservation.reservee;
+        const tempState = oldReservation.state;
+        oldSlot.reservee = null;
+        oldSlot.state = false;
+        newSlot.reservee = tempReservee;
+        newSlot.state = tempState;
+
+        await lab.save();
+        await labToUpdate.save();
+        
+
+        console.log('Reservation edited successfully.');
+        res.status(200).json({ message: 'Reservation edited successfully' });
+    } catch (error) {
+        console.error('Error editing reservation:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+};
+
+exports.deleteReservation = async (req, res) => {
+    const { reservationId } = req.params;
+
+    try {
+        const lab = await Lab.findOne({ 'SeatReservations.Seats.SlotReservations._id': reservationId });
+        
+        if (!lab) {
+            return res.status(404).json({ message: 'Reservation not found' });
+        }
+
+        let reservationToDelete;
+
+        lab.SeatReservations.forEach(reservation => {
+            reservation.Seats.forEach(s => {
+                s.SlotReservations.forEach(slot => {
+                    if (slot._id.toString() === reservationId) {
+                        reservationToDelete = slot;
+                    }
+                });
+            });
+        });
+
+        if (!reservationToDelete) {
+            return res.status(404).json({ message: 'Reservation not found' });
+        }
+
+        reservationToDelete.reservee = null;
+        reservationToDelete.state = false;
+
+        await lab.save();
+
+        res.status(200).json({ message: 'Reservation deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting reservation:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
     }
 };
 
@@ -250,7 +394,8 @@ exports.getStudentReservationPage = async (req, res, next) => {
                                 seat: seatID,
                                 date: date,
                                 timeSlot: timeSlot,
-                                reservee: slotReservation.reservee
+                                reservee: slotReservation.reservee,
+                                ID: slotReservation._id
                             });
                         }
                     }
@@ -260,6 +405,7 @@ exports.getStudentReservationPage = async (req, res, next) => {
 
         res.render('auth/studentreservation', {
             reservedSlotReservations: formattedSlotReservations,
+            labs: labs,
             path: '/studentreservation',
             pageTitle: 'Student Reservation'
         });
