@@ -4,80 +4,135 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit <%= user.name %>'s Profile</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        .profile-edit-container {
-            background-color: #fff;
-            margin: 20px auto;
-            padding: 20px;
-            width: 80%;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        .profile-edit-header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .profile-edit-form {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .profile-edit-form input[type="text"],
-        .profile-edit-form textarea {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 20px;
-            border-radius: 4px;
-            border: 1px solid #ddd;
-        }
-        .profile-edit-form button {
-            background-color: #007BFF;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-bottom: 10px;
-        }
-        .profile-edit-form button:hover {
-            background-color: #0056b3;
-        }
-        .profile-edit-form a {
-            text-decoration: none;
-            color: #007BFF;
-            padding: 10px 20px;
-            border-radius: 4px;
-            background-color: #007BFF;
-            color: #fff;
-            border: none;
-            cursor: pointer;
-        }
-        .profile-edit-form a:hover {
-            background-color: #0056b3;
-        }
-    </style>
+    
 </head>
-<<body>
+<style>
+
+/* General Styles */
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+.profile-edit-container {
+    background-color: #fff;
+    margin: 20px auto;
+    padding: 20px;
+    width: 80%;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-edit-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.profile-edit-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.profile-edit-form label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.profile-edit-form input[type="file"],
+.profile-edit-form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+.profile-edit-form button.save {
+    background-color: #FF884D;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+.profile-edit-form button.save:hover {
+    background-color: #ff884a;
+}
+.save {
+    text-decoration: none;
+    color: #FF884D;
+    padding: 10px 20px;
+    border-radius: 4px;
+    background-color: #FF884a;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    display: inline-block;
+    margin: 5px;
+}
+.delete-profile-button {
+    text-decoration: none;
+    color: #FF884D;
+    padding: 10px 20px;
+    border-radius: 4px;
+    background-color: #FF884a;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    display: inline-block;
+    max-width: 50px;
+    margin: 5px;
+}
+
+.delete-profile-button:hover {
+    background-color: #0056b3;
+}
+
+</style>
+<body>
+    <div class="menu"> 
+        <div class="menu-header"> 
+            <a href="/labs">
+                <img class="logo" src="../imgs/LabrYnth.png" />
+            </a>
+            <div class="dropdown">
+    <button class="dropbtn">Menu</button>
+    <div class="profile-dropdown">
+        <img class="pfp" src="<%= user.jpgFilename %>" />
+        <div class="dropdown-content">
+            <a href="/roleredirect/<%= user._id %>">Labs</a>
+            <a href="/user/<%= user._id %>">My Profile</a>
+            <a href="/roleredirectres/<%= user._id %>">My Reservations</a>
+            <a href="/search">Search</a>
+            <a href="/labs">Logout</a>
+        </div>
+    </div>
+  </div>
+        </div>  
+    </div>
     <div class="profile-edit-container">
         <div class="profile-edit-header">
             <h1>Edit <%= user.name %>'s Profile</h1>
         </div>
-        <form action="/user/edit/<%= user._id %>" method="POST" enctype="multipart/form-data">
+        <form action="/user/edit/<%= user._id %>" method="POST" enctype="multipart/form-data" name = >
             <label for="description">Description:</label>
             <textarea name="description" rows="4" placeholder="Enter a description"><%= user.txtFilename %></textarea>
-            
+            <br>
             <label for="image">Profile Image:</label>
             <input type="file" id="image" name="image">
-            
-            <button type="submit">Save Changes</button>
+            <br>
+            <button type="submit" class="save">Save Changes</button>
         </form>
-        <a href="/user/delete/<%= user._id %>">Delete Profile</a>
+        <a href="/user/delete/<%= user._id %>" class="delete-profile-button">Delete Profile</a>
     </div>
 </body>
 </html>

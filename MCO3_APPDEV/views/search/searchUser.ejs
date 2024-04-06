@@ -3,11 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/search.css">
     <title>Search User</title>
 </head>
 <body>
     <h1>User Search</h1>
-  
+    <div class="menu"> 
+      <div class="menu-header"> 
+          <a href="/labs">
+              <img class="logo" src="../imgs/LabrYnth.png" />
+          </a>
+          <div class="dropdown">
+  <button class="dropbtn">Menu</button>
+  <div class="profile-dropdown">
+      <img class="pfp" src="<%= user.jpgFilename %>" />
+      <div class="dropdown-content">
+          <a href="/roleredirect/<%= user._id %>">Labs</a>
+          <a href="/user/edit/<%= user._id %>">Edit Profile</a>
+          <a href="/user/<%= user._id %>">My Profile</a>
+          <a href="/roleredirectres/<%= user._id %>">My Reservations</a>
+          <a href="/labs">Logout</a>
+      </div>
+  </div>
+</div>
+      </div>  
+  </div>
     <form action="/search" method="POST">
       <label for="searchTerm">Search Term:</label>
       <input type="text" id="searchTerm" name="searchTerm" placeholder="Enter email, name, or other criteria">

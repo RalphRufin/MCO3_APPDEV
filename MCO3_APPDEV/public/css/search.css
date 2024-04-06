@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 
-
 body {
     font-family: 'Roboto', sans-serif;
     background-color: #f4f4f4;
@@ -14,89 +13,79 @@ h1 {
     margin-bottom: 20px;
 }
 
-.labForm {
-    background-color: #fff;
+form {
+    background-color:#FBE8A6;
     padding: 20px;
     margin: 20px auto;
     width: 80%;
-    border-radius: 8px;
+    border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.labForm label {
+form label {
     display: block;
     margin-bottom: 5px;
 }
 
-.labForm select,
-.labForm button {
+form input[type="text"],
+form button {
+    display: block;
     width: 100%;
     padding: 10px;
+    margin-top: 5px;
     margin-bottom: 10px;
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 5px;
+    box-sizing: border-box;
 }
 
-.labForm button {
-    background-color: #007BFF;
+form button {
+    background-color: #FF884D;
     color: #fff;
     cursor: pointer;
     border: none;
 }
 
-.labForm button:disabled {
+form button:disabled {
     background-color: #ccc;
     cursor: not-allowed;
 }
 
-.labForm input[type="hidden"] {
-    display: none; 
-}
-
-
-#logoutSelect {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    margin: 20px auto;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-
-.labForm option[disabled] {
-    color: #999;
-}
-
-
-.menu {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
-    flex-grow: 1;
-    margin-bottom: 20px;
-}
-
-.menu-header { 
-    display: flex;
-    width: 100%;
-    height: 90px; 
-    min-height: 80px; 
+#searchResultsContainer {
     background-color: #FBE8A6;
-    position: sticky;
-    top: 0; 
-    flex-direction: row;
-    border-radius: 10px;
-    z-index: 1;
+    padding: 20px;
+    margin: 20px auto;
+    width: 80%;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.dropdown {
-    display: inline-block;
-    margin-left: auto;
-    margin-right: 15px;
-    padding: 1px;
-    margin-top: 15px;
+#searchResultsContainer h2 {
+    margin-top: 0;
+    color: #FBE8A6;
+}
+
+#searchResultsContainer ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+#searchResultsContainer ul li {
+    margin-bottom: 10px;
+}
+
+#searchResultsContainer ul li a {
+    color: #0056b3;
+    text-decoration: none;
+}
+
+#searchResultsContainer ul li a:hover {
+    text-decoration: underline;
+}
+
+#searchResultsContainer p {
+    text-align: center;
+    color: #999;
 }
 
 .dropbtn {
@@ -107,6 +96,14 @@ h1 {
     border: none;
     cursor: pointer;
     float: right; /* Move the menu button to the right */
+}
+
+.dropdown {
+    display: inline-block;
+    margin-left: auto;
+    margin-right: 15px;
+    padding: 1px;
+    margin-top: 15px;
 }
 
 .profile-dropdown {
@@ -142,14 +139,4 @@ h1 {
 
 .dropdown:hover .profile-dropdown {
     display: block;
-}
-
-
-#logoutSelect {
-    display: block;
-    width: 50%;
-    padding: 10px;
-    margin: 20px auto;
-    border: 1px solid #ccc;
-    border-radius: 4px;
 }

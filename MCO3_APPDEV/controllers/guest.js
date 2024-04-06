@@ -210,6 +210,7 @@ exports.getTechnicianReservationPage = async (req, res, next) => {
     try {
         const labs = await Lab.find();
         const formattedSlotReservations = [];
+        const { userID } = req.params;
 
         for (const lab of labs) {
             for (const seatReservation of lab.SeatReservations) {
@@ -242,7 +243,7 @@ exports.getTechnicianReservationPage = async (req, res, next) => {
         }
         res.render('auth/technicianreservation', {
             reservedSlotReservations: formattedSlotReservations,
-            user: users,
+            users: users,
             labs: labs,
             path: '/technicianreservation',
             pageTitle: 'Technician Reservation'

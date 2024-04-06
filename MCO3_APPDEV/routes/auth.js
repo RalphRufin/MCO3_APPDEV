@@ -14,4 +14,8 @@ router.post('/signup', authController.postSignup);
 
 router.post('/logout', authController.postLogout);
 
+router.post('/roleredirect/:userID', authController.roleredirect);
+
+router.post('/roleredirectres/:userID', authController.roleredirectres);
+
 module.exports = router;
